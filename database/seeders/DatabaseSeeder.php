@@ -9,6 +9,7 @@ use App\Models\OrderItems;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -19,12 +20,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         // User::factory(10)->create();
+
+        $roles = [
+            'admin',
+            'farmer',
+            'customer',
+        ];
+
+        //        add roles on Spatie Role
+        foreach ($roles as $role) {
+            Role::create(['name' => $role]);
+        }
 
         $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-        ]);
+        ])->assignRole('admin');
 
         Categorie::factory(20)->create();
         Location::factory(20)->create();
@@ -37,7 +50,7 @@ class DatabaseSeeder extends Seeder
             ])
             ->has(
                 OrderItems::factory()->count(rand(2, 5))
-                    ->state(fn(array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
+                    ->state(fn (array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
                 'orderItems'
             )
             ->create();
@@ -45,7 +58,7 @@ class DatabaseSeeder extends Seeder
         Order::factory(20)
             ->has(
                 OrderItems::factory()->count(rand(2, 5))
-                    ->state(fn(array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
+                    ->state(fn (array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
                 'orderItems'
             )
             ->create();

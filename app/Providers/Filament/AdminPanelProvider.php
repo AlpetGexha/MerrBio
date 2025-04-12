@@ -54,6 +54,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->plugin(\TomatoPHP\FilamentUsers\FilamentUsersPlugin::make())
+            ->plugin(\BezhanSalleh\FilamentShield\FilamentShieldPlugin::make());
     }
 }

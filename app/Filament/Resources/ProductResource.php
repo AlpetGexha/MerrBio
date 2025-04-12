@@ -38,7 +38,6 @@ class ProductResource extends Resource
                     ->rows(5)
                     ->columnSpanFull(),
 
-
             ]);
     }
 

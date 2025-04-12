@@ -10,6 +10,7 @@ class LocationController extends Controller
     public function index()
     {
         $locations = Location::where('user_id', auth()->id())->get();
+
         return response()->json($locations);
     }
 
@@ -39,6 +40,7 @@ class LocationController extends Controller
     public function show($id)
     {
         $location = Location::where('user_id', auth()->id())->findOrFail($id);
+
         return response()->json($location);
     }
 

@@ -22,7 +22,8 @@ class CategorieResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required(),
-                Forms\Components\TextInput::make('slug'),
+                Forms\Components\TextInput::make('unit_of_measurement'),
+                Forms\Components\TextInput::make('symbol')
             ]);
     }
 
@@ -32,8 +33,8 @@ class CategorieResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('unit_of_measurement'),
+                Tables\Columns\TextColumn::make('symbol'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -48,6 +49,7 @@ class CategorieResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -67,8 +69,8 @@ class CategorieResource extends Resource
     {
         return [
             'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategorie::route('/create'),
-            'edit' => Pages\EditCategorie::route('/{record}/edit'),
+//            'create' => Pages\CreateCategorie::route('/create'),
+//            'edit' => Pages\EditCategorie::route('/{record}/edit'),
         ];
     }
 }

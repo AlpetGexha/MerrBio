@@ -9,12 +9,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
-
     protected static ?int $sort = 1;
 
     protected function getStats(): array
     {
-//       get all the orders with status new for the auth user
+        //       get all the orders with status new for the auth user
         $newOrders = Order::query()
             ->where('status', OrderStatus::New)
             ->where('user_id', auth()->id())
@@ -25,13 +24,12 @@ class StatsOverview extends BaseWidget
             ->where('user_id', auth()->id())
             ->count();
 
-//        sum the  total_amount of order who where deliver this month
+        //        sum the  total_amount of order who where deliver this month
         $deliveredOrders = Order::query()
             ->where('user_id', auth()->id())
             ->whereMonth('created_at', now()->month)
             ->where('status', OrderStatus::Delivered)
             ->sum('total_amount');
-
 
         return [
             Stat::make('News Orders', $newOrders),

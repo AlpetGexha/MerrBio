@@ -35,7 +35,6 @@ class Order extends Model
         return $this->hasMany(OrderItems::class);
     }
 
-
     public function newsScope(Builder $query): Builder
     {
         return $query->where('status', OrderStatus::New);
@@ -45,7 +44,6 @@ class Order extends Model
     {
         return $query->where('status', OrderStatus::Processing);
     }
-
 
     protected function casts(): array
     {
