@@ -49,12 +49,75 @@ class OrderResource extends Resource
                             ->modalDescription('All existing items will be removed from the order.')
                             ->requiresConfirmation()
                             ->color('danger')
-                            ->action(fn (Forms\Set $set) => $set('items', [])),
+                            ->action(fn(Forms\Set $set) => $set('items', [])),
                     ])
                     ->schema([
                         static::getItemsRepeater(),
                     ]),
             ]);
+    }
+
+    public static function getItemsRepeater(): Repeater
+    {
+        return Repeater::make('orderItems')
+            ->relationship()
+            ->schema([
+                Forms\Components\Select::make('product_id')
+                    ->label('Product')
+                    ->options(Product::query()->pluck('name', 'id'))
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(fn($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0))
+                    ->distinct()
+                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                    ->columnSpan([
+                        'md' => 5,
+                    ])
+                    ->searchable(),
+
+                Forms\Components\TextInput::make('quantity')
+                    ->label('Quantity')
+                    ->numeric()
+                    ->default(1)
+                    ->columnSpan([
+                        'md' => 2,
+                    ])
+                    ->required(),
+
+                Forms\Components\TextInput::make('unit_price')
+                    ->label('Unit Price')
+                    ->disabled()
+                    ->dehydrated()
+                    ->numeric()
+                    ->required()
+                    ->columnSpan([
+                        'md' => 3,
+                    ]),
+            ])
+            ->extraItemActions([
+                Action::make('openProduct')
+                    ->tooltip('Open product')
+                    ->icon('heroicon-m-arrow-top-right-on-square')
+                    ->url(function (array $arguments, Repeater $component): ?string {
+                        $itemData = $component->getRawItemState($arguments['item']);
+
+                        $product = Product::find($itemData['product_id']);
+
+                        if (!$product) {
+                            return null;
+                        }
+
+                        return ProductResource::getUrl('edit', ['record' => $product]);
+                    }, shouldOpenInNewTab: true)
+                    ->hidden(fn(array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
+            ])
+            ->orderColumn('sort')
+            ->defaultItems(1)
+            ->hiddenLabel()
+            ->columns([
+                'md' => 10,
+            ])
+            ->required();
     }
 
     public static function table(Table $table): Table
@@ -113,69 +176,6 @@ class OrderResource extends Resource
         return [
             //
         ];
-    }
-
-    public static function getItemsRepeater(): Repeater
-    {
-        return Repeater::make('orderItems')
-            ->relationship()
-            ->schema([
-                Forms\Components\Select::make('product_id')
-                    ->label('Product')
-                    ->options(Product::query()->pluck('name', 'id'))
-                    ->required()
-                    ->reactive()
-                    ->afterStateUpdated(fn($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0))
-                    ->distinct()
-                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                    ->columnSpan([
-                        'md' => 5,
-                    ])
-                    ->searchable(),
-
-                Forms\Components\TextInput::make('qty')
-                    ->label('Quantity')
-                    ->numeric()
-                    ->default(1)
-                    ->columnSpan([
-                        'md' => 2,
-                    ])
-                    ->required(),
-
-                Forms\Components\TextInput::make('unit_price')
-                    ->label('Unit Price')
-                    ->disabled()
-                    ->dehydrated()
-                    ->numeric()
-                    ->required()
-                    ->columnSpan([
-                        'md' => 3,
-                    ]),
-            ])
-            ->extraItemActions([
-                Action::make('openProduct')
-                    ->tooltip('Open product')
-                    ->icon('heroicon-m-arrow-top-right-on-square')
-                    ->url(function (array $arguments, Repeater $component): ?string {
-                        $itemData = $component->getRawItemState($arguments['item']);
-
-                        $product = Product::find($itemData['product_id']);
-
-                        if (!$product) {
-                            return null;
-                        }
-
-                        return ProductResource::getUrl('edit', ['record' => $product]);
-                    }, shouldOpenInNewTab: true)
-                    ->hidden(fn(array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
-            ])
-            ->orderColumn('sort')
-            ->defaultItems(1)
-            ->hiddenLabel()
-            ->columns([
-                'md' => 10,
-            ])
-            ->required();
     }
 
     public static function getPages(): array
