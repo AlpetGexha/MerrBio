@@ -19,10 +19,7 @@ class ContactTheFarmerJob implements ShouldQueue
         public string $message,
         public string $emilTo,
         public ?string $from = null,
-    )
-    {
-
-    }
+    ) {}
 
     /**
      * Execute the job.
@@ -31,10 +28,10 @@ class ContactTheFarmerJob implements ShouldQueue
     {
         Mail::to($this->emilTo)
             ->send(new ContactTheFarmerMail(
-            toEmail: $this->emilTo,
-            subjectFor: $this->subjectFor,
-            message: $this->message,
-            fromTo: $this->from,
-        ));
+                toEmail: $this->emilTo,
+                subjectFor: $this->subjectFor,
+                message: $this->message,
+                fromTo: $this->from,
+            ));
     }
 }

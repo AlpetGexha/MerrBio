@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Enums;
+
 enum Price: string
 {
     case ACTIVE = 'active';

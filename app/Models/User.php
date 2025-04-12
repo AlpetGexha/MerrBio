@@ -10,14 +10,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-//use Spatie\MediaLibrary\HasMedia;
-
+// use Spatie\MediaLibrary\HasMedia;
 
 class User extends Authenticatable
-
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +47,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Cart::class);
     }
-
 
     /**
      * Get the attributes that should be cast.

@@ -26,16 +26,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-
         Categorie::factory(20)->create();
         Location::factory(20)->create();
         $products = Product::factory(10)->create();
 
-
         Order::factory(20)
             ->has(
                 OrderItems::factory()->count(rand(2, 5))
-                    ->state(fn(array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
+                    ->state(fn (array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
                 'orderItems'
             )
             ->create();

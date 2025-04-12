@@ -18,7 +18,7 @@ class Product extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            if (!auth()->check()) {
+            if (! auth()->check()) {
                 return;
             }
 
@@ -35,6 +35,7 @@ class Product extends Model
     {
         return $this->belongsTo(Categorie::class);
     }
+
     public function categorie(): BelongsTo
     {
         return $this->belongsTo(Categorie::class);

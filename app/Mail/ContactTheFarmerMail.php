@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
@@ -14,16 +13,7 @@ class ContactTheFarmerMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(
-        public string $toEmail,
-        public string $subjectFor,
-        public string $message,
-        public ?string $fromTo = null,
-    )
-    {}
+    public function __construct(public string $toEmail, public string $subjectFor, public string $message, public ?string $fromTo = null) {}
 
     /**
      * Get the message envelope.

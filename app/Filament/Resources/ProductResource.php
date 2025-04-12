@@ -3,9 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
-use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,7 +23,7 @@ class ProductResource extends Resource
                 Forms\Components\Select::make('categorie_id')
                     ->relationship('category', 'name')
                     ->required(),
-                //user id auto
+                // user id auto
                 Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('price')
@@ -40,7 +38,7 @@ class ProductResource extends Resource
                     ->columnSpanFull(),
 
                 Forms\Components\TextInput::make('stock')
-                    ->integer()
+                    ->integer(),
             ]);
     }
 

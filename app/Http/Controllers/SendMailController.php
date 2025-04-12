@@ -12,11 +12,11 @@ class SendMailController extends Controller
      */
     public function __invoke(Request $request)
     {
-//        if(auth()->guest()) {
-//            return response()->json([
-//                'message' => 'You must be logged in to send an email.',
-//            ], 401);
-//        }
+        //        if(auth()->guest()) {
+        //            return response()->json([
+        //                'message' => 'You must be logged in to send an email.',
+        //            ], 401);
+        //        }
 
         $request->validate([
             'toMail' => 'required|email|exists:users,email',
@@ -24,13 +24,11 @@ class SendMailController extends Controller
             'message' => 'required|string',
         ]);
 
-
-
         dispatch(new ContactTheFarmerJob(
             subjectFor: $request->input('subject'),
             message: $request->input('message'),
             emilTo: $request->input('toMail'),
-            from:  $request->input('from') ?? auth()?->user()?->email,
+            from: $request->input('from') ?? auth()?->user()?->email,
         ));
 
         return response()->json([
