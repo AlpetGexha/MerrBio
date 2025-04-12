@@ -24,7 +24,7 @@ class ContactTheFarmerJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle()
     {
         Mail::to($this->emilTo)
             ->send(new ContactTheFarmerMail(

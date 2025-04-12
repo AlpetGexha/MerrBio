@@ -26,7 +26,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald,
+                'gray' => Color::Slate,
             ])
             ->databaseNotifications() // need to see the export files for the permission
             ->databaseTransactions() // optional

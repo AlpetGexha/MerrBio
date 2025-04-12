@@ -23,6 +23,7 @@ class OrderFactory extends Factory
             'status' => $this->faker->randomElement(['new', 'shipped', 'processing', 'delivered', 'cancelled']),
             'payment_status' => $this->faker->randomElement(['pending', 'completed', 'failed']),
             'payment_method' => $this->faker->randomElement(['credit_card', 'paypal', 'bank_transfer', 'cash']),
+            'total_amount' => $this->faker->randomFloat(2, 10, 1000),
         ];
     }
 }

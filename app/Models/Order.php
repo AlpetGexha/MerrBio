@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\OrderStatus;
 use Database\Factories\OrderFactory;
+use Filament\Forms\Components\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,6 +28,18 @@ class Order extends Model
     {
         return $this->hasMany(OrderItems::class);
     }
+
+
+    public function newsScope(Builder $query): Builder
+    {
+        return $query->where('status', OrderStatus::New);
+    }
+
+    public function processingScope(Builder $query): Builder
+    {
+        return $query->where('status', OrderStatus::Processing);
+    }
+
 
     protected function casts(): array
     {
