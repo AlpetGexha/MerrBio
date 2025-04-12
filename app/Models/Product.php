@@ -35,6 +35,10 @@ class Product extends Model
     {
         return $this->belongsTo(Categorie::class);
     }
+    public function categorie(): BelongsTo
+    {
+        return $this->belongsTo(Categorie::class);
+    }
 
     public function carts(): HasMany
     {
