@@ -47,7 +47,7 @@ class OrderResource extends Resource
                             ->modalDescription('All existing items will be removed from the order.')
                             ->requiresConfirmation()
                             ->color('danger')
-                            ->action(fn (Forms\Set $set) => $set('items', [])),
+                            ->action(fn(Forms\Set $set) => $set('items', [])),
                     ])
                     ->schema([
                         static::getItemsRepeater(),
@@ -62,10 +62,10 @@ class OrderResource extends Resource
             ->schema([
                 Forms\Components\Select::make('product_id')
                     ->label('Product')
-                    ->options(Product::query()->pluck('name', 'id'))
+                    ->options(Product::query()->where('user_id', auth()->id())->pluck('name', 'id'))
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(fn ($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0))
+                    ->afterStateUpdated(fn($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0))
                     ->distinct()
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->columnSpan([
@@ -101,13 +101,13 @@ class OrderResource extends Resource
 
                         $product = Product::find($itemData['product_id']);
 
-                        if (! $product) {
+                        if (!$product) {
                             return null;
                         }
 
                         return ProductResource::getUrl('edit', ['record' => $product]);
                     }, shouldOpenInNewTab: true)
-                    ->hidden(fn (array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
+                    ->hidden(fn(array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
             ])
             ->orderColumn('sort')
             ->defaultItems(1)
@@ -121,6 +121,9 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function ($query) {
+                return $query->where('farmer_id', auth()->user()->id);
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()

@@ -18,6 +18,8 @@ class CategorieFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
+            'unit_of_measurement' => $this->faker->word(),
+            'symbol' => $this->faker->word(),
         ];
     }
 }

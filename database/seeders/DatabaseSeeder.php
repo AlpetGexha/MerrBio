@@ -28,12 +28,24 @@ class DatabaseSeeder extends Seeder
 
         Categorie::factory(20)->create();
         Location::factory(20)->create();
+
         $products = Product::factory(10)->create();
+        $products_user = Product::factory(4)->recycle($user)->create();
+        $order_product = Order::factory(20)
+            ->state([
+                'farmer_id' => $user->id,
+            ])
+            ->has(
+                OrderItems::factory()->count(rand(2, 5))
+                    ->state(fn(array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
+                'orderItems'
+            )
+            ->create();
 
         Order::factory(20)
             ->has(
                 OrderItems::factory()->count(rand(2, 5))
-                    ->state(fn (array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
+                    ->state(fn(array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
                 'orderItems'
             )
             ->create();

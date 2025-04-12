@@ -20,33 +20,36 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required(),
                 Forms\Components\Select::make('categorie_id')
                     ->relationship('category', 'name')
-                    ->required(),
-                // user id auto
-                Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('price')
 //                    ->money("EUR")
                     ->required()
                     ->numeric()
                     ->suffix('€'),
-
+                Forms\Components\TextInput::make('stock')
+                    ->required()
+                    ->integer(),
                 Forms\Components\Textarea::make('body')
                     ->autosize()
                     ->rows(5)
                     ->columnSpanFull(),
 
-                Forms\Components\TextInput::make('stock')
-                    ->integer(),
+
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function ($query) {
+                return $query->where('user_id', auth()->user()->id);
+            })
             ->columns([
-                Tables\Columns\TextColumn::make('category.id')
+                Tables\Columns\TextColumn::make('categorie.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
