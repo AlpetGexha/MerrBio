@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('longitude')->nullable();
             $table->string('city')->nullable();
             $table->string('country')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }
