@@ -13,6 +13,19 @@ class Product extends Model
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (!auth()->check()) {
+                return;
+            }
+
+            $model->user_id = auth()->user()->id;
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

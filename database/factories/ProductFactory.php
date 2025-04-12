@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Categorie;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
+ * @extends Factory<Product>
  */
 class ProductFactory extends Factory
 {
@@ -24,6 +25,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->word(),
             'body' => $this->faker->text(),
             'price' => $this->faker->randomFloat(2, 1, 100),
+            'stock' => $this->faker->numberBetween(1, 100),
             'status' => $this->faker->randomElement(['active', 'inactive', 'out_of_stock']),
         ];
     }

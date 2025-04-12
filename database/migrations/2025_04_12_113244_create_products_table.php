@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('slug')->nullable()->unique();
             $table->string('body')->nullable();
             $table->decimal('price', 10, 2);
+            $table->integer('stock')->default(0);
             $table->string('status')->default('active');
             $table->timestamps();
         });
