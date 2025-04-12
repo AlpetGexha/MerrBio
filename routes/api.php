@@ -10,9 +10,6 @@ use App\Http\Controllers\CartController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-    
-   
-
 })->middleware('auth:sanctum');
 
 Route::get('/products', ProductsList::class)->name('products.list');
