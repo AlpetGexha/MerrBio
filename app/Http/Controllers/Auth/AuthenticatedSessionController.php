@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,11 +34,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-//        return response()->noContent();
         $user = Auth::user();
-//
+        $user->load('roles');
+
+        $role = $user->getRoleNames()[0];
+
+
         return response()->json([
             'user' => $user,
+            'role' => $role,
             'token' => $user->createToken('API FOR' . $user->email . '-' . $request->device_name)->plainTextToken,
         ]);
 
