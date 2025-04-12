@@ -35,13 +35,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return response()->noContent();
-//        $user = Auth::user();
+//        return response()->noContent();
+        $user = Auth::user();
 //
-//        return response()->json([
-//            'user' => $user,
-//            'token' => $user->createToken('API FOR' . $user->email . '-' . $request->device_name)->plainTextToken,
-//        ]);
+        return response()->json([
+            'user' => $user,
+            'token' => $user->createToken('API FOR' . $user->email . '-' . $request->device_name)->plainTextToken,
+        ]);
 
 
 //        return redirect()->intended(route('dashboard', absolute: false));
