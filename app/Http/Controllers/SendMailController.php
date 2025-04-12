@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ContactTheFarmerJob;
+use App\Models\Contact;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SendMailController extends Controller
@@ -22,6 +24,14 @@ class SendMailController extends Controller
             'toMail' => 'required|email|exists:users,email',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
+        ]);
+
+        $toUser = User::where('email', $request->input('toMail'))->first();
+
+        Contact::create([
+            'user_id' => $toUser->id,
+            'message' => $request->input('message'),
+            'subject' => $request->input('subject'),
         ]);
 
         dispatch(new ContactTheFarmerJob(
