@@ -6,10 +6,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryList;
 use App\Http\Controllers\CategoryView;
 use App\Http\Controllers\ProductsList;
+use App\Http\Controllers\SendMailController;
 use App\Http\Controllers\CartController;
 
+Route::get('/users', function (Request $request) {
+    return response()->json([
+        'users' => \App\Models\User::all(),
+    ]);
+});
 Route::get('/user', function (Request $request) {
     return $request->user();
+
+
+
 })->middleware('auth:sanctum');
 
 Route::get('/products', ProductsList::class)->name('products.list');
@@ -24,3 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/cart/{id}', [CartController::class, 'update']);
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 });
+
+
+Route::post('/sendEmail', SendMailController::class)->name('sendEmail');
