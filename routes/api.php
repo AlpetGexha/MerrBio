@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryList;
 use App\Http\Controllers\CategoryView;
 use App\Http\Controllers\ProductsList;
-use App\Http\Controllers\SendMailController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\SendMailController;
 
 Route::get('/users', function (Request $request) {
     return response()->json([
@@ -16,9 +17,6 @@ Route::get('/users', function (Request $request) {
 });
 Route::get('/user', function (Request $request) {
     return $request->user();
-
-
-
 })->middleware('auth:sanctum');
 
 Route::get('/products', ProductsList::class)->name('products.list');
@@ -32,6 +30,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cart/store', [CartController::class, 'store']);
     Route::put('/cart/{id}', [CartController::class, 'update']);
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+
+
+    Route::get('/locations', [LocationController::class, 'index']);        
+    Route::post('/locations', [LocationController::class, 'store']);       
+    Route::get('/locations/{id}', [LocationController::class, 'show']);    
+    Route::put('/locations/{id}', [LocationController::class, 'update']);  
+    Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
 });
 
 
