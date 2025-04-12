@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Categorie;
 use App\Models\Location;
+use App\Models\Order;
+use App\Models\OrderItems;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -27,6 +29,15 @@ class DatabaseSeeder extends Seeder
 
         Categorie::factory(20)->create();
         Location::factory(20)->create();
-        Product::factory(10)->create();
+        $products = Product::factory(10)->create();
+
+
+        Order::factory(20)
+            ->has(
+                OrderItems::factory()->count(rand(2, 5))
+                    ->state(fn(array $attributes, Order $order) => ['product_id' => $products->random(1)->first()->id]),
+                'orderItems'
+            )
+            ->create();
     }
 }

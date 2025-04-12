@@ -2,20 +2,19 @@
 
 namespace App\Models;
 
-use App\Enums\OrderStatus;
-use Database\Factories\OrderFactory;
+use Database\Factories\OrderItemsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Order extends Model
+class OrderItems extends Model
 {
-    /** @use HasFactory<OrderFactory> */
+    /** @use HasFactory<OrderItemsFactory> */
     use HasFactory;
 
-    public function user()
+    public function order()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function product()
@@ -26,12 +25,5 @@ class Order extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItems::class);
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'status' => OrderStatus::class,
-        ];
     }
 }
