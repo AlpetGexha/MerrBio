@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('locations/{id}', [LocationController::class, 'destroy']);
 });
 
-Route::post('register', [RegisteredUserController::class, 'store'])->name('register');
-Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
+//Route::post('register', [RegisteredUserController::class, 'store'])->name('register');
+//Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
 
 Route::post('sendEmail', SendMailController::class)->name('sendEmail');
