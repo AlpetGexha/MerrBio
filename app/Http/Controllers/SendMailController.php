@@ -29,7 +29,8 @@ class SendMailController extends Controller
         $toUser = User::where('email', $request->input('toMail'))->first();
 
         Contact::create([
-            'user_id' => $toUser->id,
+            'resaver_id' => $toUser->id,
+            'sender_id' => $request->input('from') ?? auth()?->id(),
             'message' => $request->input('message'),
             'subject' => $request->input('subject'),
         ]);

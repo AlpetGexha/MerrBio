@@ -16,17 +16,17 @@ class StatsOverview extends BaseWidget
         //       get all the orders with status new for the auth user
         $newOrders = Order::query()
             ->where('status', OrderStatus::New)
-            ->where('user_id', auth()->id())
+            ->where('farmer_id', auth()->id())
             ->count();
 
         $processingOrders = Order::query()
             ->where('status', OrderStatus::Processing)
-            ->where('user_id', auth()->id())
+            ->where('farmer_id', auth()->id())
             ->count();
 
         //        sum the  total_amount of order who where deliver this month
         $deliveredOrders = Order::query()
-            ->where('user_id', auth()->id())
+            ->where('farmer_id', auth()->id())
             ->whereMonth('created_at', now()->month)
             ->where('status', OrderStatus::Delivered)
             ->sum('total_amount');
@@ -39,5 +39,10 @@ class StatsOverview extends BaseWidget
                 ->color('success')
                 ->icon('heroicon-o-check-circle'),
         ];
+    }
+
+    public static function canView(): bool
+    {
+        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
     }
 }

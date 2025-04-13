@@ -10,7 +10,7 @@ use Flowframe\Trend\TrendValue;
 class OrdersChart extends ChartWidget
 {
     protected static ?int $sort = 2;
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Orders Chard';
 
     public ?string $filter = 'this_month';
 
@@ -18,9 +18,11 @@ class OrdersChart extends ChartWidget
     {
         $activeFilter = $this->filter;
 
+
         $data = TrendAction::model(Order::class)
             ->filterBy($activeFilter)
             ->count();
+
 
         return [
             'datasets' => [
@@ -41,5 +43,10 @@ class OrdersChart extends ChartWidget
     protected function getFilters(): ?array
     {
         return TrendAction::filterType();
+    }
+
+    public static function canView(): bool
+    {
+        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
     }
 }

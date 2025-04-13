@@ -54,7 +54,9 @@ class UserFactory extends Factory
             ];
 
 
-            $user->assignRole($roles[array_rand($roles)]);
+//            if ($user->hasAnyRole()) {
+//                $user->assignRole($roles[array_rand($roles)]);
+//            }
 
         });
     }

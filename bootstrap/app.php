@@ -34,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->api(append: [
             EnsureJsonHeader::class,
+            StartSession::class,
             EnsureFrontendRequestsAreStateful::class,
         ]);
 

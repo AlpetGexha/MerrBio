@@ -70,9 +70,5 @@ class ContactResource extends Resource
 //            'edit' => Pages\EditContact::route('/{record}/edit'),
         ];
     }
-
-    public static function canAccess(): bool
-    {
-        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
-    }
+    
 }

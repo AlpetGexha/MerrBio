@@ -9,7 +9,7 @@ use Flowframe\Trend\TrendValue;
 
 class PaymentChart extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Payment Chart';
 
     protected static ?int $sort = 3;
 
@@ -20,7 +20,7 @@ class PaymentChart extends ChartWidget
         $activeFilter = $this->filter;
 
         $data = TrendAction::model(Order::class)
-            ->dateColumn('total_amount')
+//            ->dateColumn()
             ->filterBy($activeFilter)
             ->count();
 
@@ -46,4 +46,10 @@ class PaymentChart extends ChartWidget
     {
         return TrendAction::filterType();
     }
+
+    public static function canView(): bool
+    {
+        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
+    }
+
 }
