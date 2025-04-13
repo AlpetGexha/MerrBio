@@ -71,6 +71,7 @@ class ContactResource extends Resource
                         ]);
                     })
             ])
+//            php artisan make:filament-resource Order --generate
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
