@@ -8,13 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth/auth-split-layout';
-
+import { cn } from '@/lib/utils';
 
 type RegisterForm = {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
+    is_farmer: boolean;
 };
 
 export default function Register() {
@@ -23,6 +24,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        is_farmer: false,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -99,7 +101,21 @@ export default function Register() {
                             disabled={processing}
                             placeholder="Confirm password"
                         />
+
                         <InputError message={errors.password_confirmation} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="is_farmer">
+                            <input
+                                type={'checkbox'}
+                                className={cn(
+                                    'peer border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+                                )}
+                            />
+                            <span className="ml-2">Register as farmer</span>
+                        </Label>
+                        <InputError message={errors.is_farmer} />
                     </div>
 
                     <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>

@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             'token' => $user->createToken('API FOR' . $user->email . '-' . $request->device_name)->plainTextToken,
         ]);
 
-        //        return redirect()->intended(route('dashboard', absolute: false));
+//                return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
