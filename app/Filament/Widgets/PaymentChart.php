@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Actions\TrendAction;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\TrendValue;
@@ -24,8 +25,13 @@ class PaymentChart extends ChartWidget
     {
         $activeFilter = $this->filter;
 
-        $data = TrendAction::model(Order::class)
-//            ->dateColumn()
+        $query = Order::query()
+            ->where('farmer_id', '=', auth()->id())
+            ->where('status', '!=', OrderStatus::Delivered)
+            ->orWhere('status', OrderStatus::Delivered);
+
+
+        $data = TrendAction::query($query)
             ->filterBy($activeFilter)
             ->count();
 
@@ -33,12 +39,12 @@ class PaymentChart extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Payments for the delivered orders',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
                     //                    'backgroundColor' => "rgba({$color}, 0.2)",
                     //                    'borderColor' => "rgb({$color})",
                 ],
             ],
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' => $data->map(fn(TrendValue $value) => $value->date),
         ];
     }
 

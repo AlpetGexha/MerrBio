@@ -22,19 +22,27 @@ class OrdersChart extends ChartWidget
     protected function getData(): array
     {
         $activeFilter = $this->filter;
+        // More explicit filtering for farmers
 
-        $data = TrendAction::model(Order::class)
+
+        $query = Order::query()->where('farmer_id', '=', auth()->id());
+
+
+        $data = TrendAction::query($query)
             ->filterBy($activeFilter)
             ->count();
+//        $data = TrendAction::model(Order::class)
+//            ->filterBy($activeFilter)
+//            ->count();
 
         return [
             'datasets' => [
                 [
                     'label' => 'Orders ',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
                 ],
             ],
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' => $data->map(fn(TrendValue $value) => $value->date),
         ];
     }
 
