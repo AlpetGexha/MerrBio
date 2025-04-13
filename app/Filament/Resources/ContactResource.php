@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactResource\Pages;
 use App\Models\Contact;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,9 +20,16 @@ class ContactResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                $query->where('user_id', auth()->user()->id);
+                $query->where('resaver_id', auth()->user()->id)
+                    ->orWhere('sender_id', auth()->user()->id);
             })
             ->columns([
+                Tables\Columns\TextColumn::make('sender_id')
+                    ->label('Label')
+                    ->formatStateUsing(function ($record) {
+                        return $record->sender_id === auth()->id() ? 'Sender' : 'Receiver';
+                    }),
+
                 Tables\Columns\TextColumn::make('from')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subject')
@@ -41,8 +49,8 @@ class ContactResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+//                Tables\Actions\ViewAction::make(),
+//                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -63,7 +71,7 @@ class ContactResource extends Resource
         return [
             'index' => Pages\ListContacts::route('/'),
             //            'create' => Pages\CreateContact::route('/create'),
-            'view' => Pages\ViewContact::route('/{record}'),
+//            'view' => Pages\ViewContact::route('/{record}'),
             //            'edit' => Pages\EditContact::route('/{record}/edit'),
         ];
     }
