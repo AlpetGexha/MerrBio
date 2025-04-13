@@ -3,10 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactResource\Pages;
-use App\Filament\Resources\ContactResource\RelationManagers;
 use App\Models\Contact;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -65,10 +62,9 @@ class ContactResource extends Resource
     {
         return [
             'index' => Pages\ListContacts::route('/'),
-//            'create' => Pages\CreateContact::route('/create'),
+            //            'create' => Pages\CreateContact::route('/create'),
             'view' => Pages\ViewContact::route('/{record}'),
-//            'edit' => Pages\EditContact::route('/{record}/edit'),
+            //            'edit' => Pages\EditContact::route('/{record}/edit'),
         ];
     }
-    
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -29,12 +28,12 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request):JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', Rules\Password::defaults()],//'confirmed'
+            'password' => ['required', Rules\Password::defaults()], // 'confirmed'
         ]);
 
         $user = User::create([
@@ -43,7 +42,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->input('password')),
         ]);
 
-        if($request->input('is_farmer') === true) {
+        if ($request->input('is_farmer') === true) {
             $user->assignRole('farmer');
         } else {
             $user->assignRole('customer');
@@ -53,7 +52,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-//        return to_route('dashboard');
+        //        return to_route('dashboard');
 
         return response()->json([
             'status' => 'success',

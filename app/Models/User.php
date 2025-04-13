@@ -13,7 +13,6 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-
 // use Spatie\MediaLibrary\HasMedia;
 
 class User extends Authenticatable implements FilamentUser
@@ -60,6 +59,10 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
+        //        if ($panel->getId() === 'admin') {
+        //            return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
+        //        }
+
         return true;
     }
 

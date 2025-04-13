@@ -15,6 +15,11 @@ class PaymentChart extends ChartWidget
 
     public ?string $filter = 'this_month';
 
+    public static function canView(): bool
+    {
+        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
+    }
+
     protected function getData(): array
     {
         $activeFilter = $this->filter;
@@ -46,10 +51,4 @@ class PaymentChart extends ChartWidget
     {
         return TrendAction::filterType();
     }
-
-    public static function canView(): bool
-    {
-        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
-    }
-
 }

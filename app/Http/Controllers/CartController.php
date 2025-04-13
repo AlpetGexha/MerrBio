@@ -11,11 +11,11 @@ class CartController extends Controller
      */
     public function index()
     {
-//        if (! auth()->check()) {
-//            return response()->json([
-//                'message' => 'Unauthorized',
-//            ], 401);
-//        }
+        //        if (! auth()->check()) {
+        //            return response()->json([
+        //                'message' => 'Unauthorized',
+        //            ], 401);
+        //        }
 
         $cart = auth()->user()->carts()
             ->with('product')
@@ -33,11 +33,11 @@ class CartController extends Controller
     public function store(Request $request)
     {
 
-//        if (! auth()->check()) {
-//            return response()->json([
-//                'message' => 'Unauthorized',
-//            ], 401);
-//        }
+        //        if (! auth()->check()) {
+        //            return response()->json([
+        //                'message' => 'Unauthorized',
+        //            ], 401);
+        //        }
 
         $request->validate([
             'product_id' => 'required|exists:products,id',
@@ -71,9 +71,7 @@ class CartController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-    }
+    public function show(string $id) {}
 
     /**
      * Update the specified resource in storage.

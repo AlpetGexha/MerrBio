@@ -11,6 +11,11 @@ class StatsOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+    public static function canView(): bool
+    {
+        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
+    }
+
     protected function getStats(): array
     {
         //       get all the orders with status new for the auth user
@@ -39,10 +44,5 @@ class StatsOverview extends BaseWidget
                 ->color('success')
                 ->icon('heroicon-o-check-circle'),
         ];
-    }
-
-    public static function canView(): bool
-    {
-        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
     }
 }

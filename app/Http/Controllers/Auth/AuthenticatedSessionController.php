@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-//        $this->destroy($request);
+        //        $this->destroy($request);
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -39,15 +39,13 @@ class AuthenticatedSessionController extends Controller
 
         $role = $user->getRoleNames()[0];
 
-
         return response()->json([
             'user' => $user,
             'role' => $role,
             'token' => $user->createToken('API FOR' . $user->email . '-' . $request->device_name)->plainTextToken,
         ]);
 
-
-//        return redirect()->intended(route('dashboard', absolute: false));
+        //        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

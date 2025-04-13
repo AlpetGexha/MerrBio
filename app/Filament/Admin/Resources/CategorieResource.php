@@ -23,7 +23,7 @@ class CategorieResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('unit_of_measurement'),
-                Forms\Components\TextInput::make('symbol')
+                Forms\Components\TextInput::make('symbol'),
             ]);
     }
 
@@ -69,8 +69,8 @@ class CategorieResource extends Resource
     {
         return [
             'index' => Pages\ListCategories::route('/'),
-//            'create' => Pages\CreateCategorie::route('/create'),
-//            'edit' => Pages\EditCategorie::route('/{record}/edit'),
+            //            'create' => Pages\CreateCategorie::route('/create'),
+            //            'edit' => Pages\EditCategorie::route('/{record}/edit'),
         ];
     }
 }

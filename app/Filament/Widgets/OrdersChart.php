@@ -14,15 +14,18 @@ class OrdersChart extends ChartWidget
 
     public ?string $filter = 'this_month';
 
+    public static function canView(): bool
+    {
+        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
+    }
+
     protected function getData(): array
     {
         $activeFilter = $this->filter;
 
-
         $data = TrendAction::model(Order::class)
             ->filterBy($activeFilter)
             ->count();
-
 
         return [
             'datasets' => [
@@ -43,10 +46,5 @@ class OrdersChart extends ChartWidget
     protected function getFilters(): ?array
     {
         return TrendAction::filterType();
-    }
-
-    public static function canView(): bool
-    {
-        return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
     }
 }
