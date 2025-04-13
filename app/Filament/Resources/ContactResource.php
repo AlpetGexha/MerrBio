@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactResource\Pages;
 use App\Models\Contact;
-use Filament\Infolists\Infolist;
+use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -51,11 +51,30 @@ class ContactResource extends Resource
             ->actions([
 //                Tables\Actions\ViewAction::make(),
 //                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('reply')
+                    ->authorize(fn(Contact $record): bool => $record->sender_id !== auth()->id())
+                    ->color('primary')
+                    ->form([
+                        Textarea::make('message')
+                            ->label('Reply')
+                            ->required()
+                            ->maxLength(500)
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ])
+                    ->action(function (Contact $record, array $data) {
+                        $record->create([
+                            'sender_id' => auth()->id(),
+                            'resaver_id' => $record->sender_id,
+                            'subject' => $record->subject,
+                            'message' => $data['message'],
+                        ]);
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                ])
             ]);
     }
 

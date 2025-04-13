@@ -59,7 +59,6 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugin(FilamentUsersPlugin::make())
-            ->plugin(FilamentShieldPlugin::make())
-            ->plugin(FilamentChainedTranslationManagerPlugin::make());
+            ->plugin(FilamentShieldPlugin::make());
     }
 }

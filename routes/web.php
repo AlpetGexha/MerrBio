@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return auth()->user()->getRoleNames();
+    return redirect('/app');
 })->name('home');
 
 // Route::middleware(['auth', 'verified'])->group(function () {
