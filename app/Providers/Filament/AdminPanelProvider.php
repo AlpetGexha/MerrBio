@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,6 +18,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Statikbe\FilamentTranslationManager\FilamentChainedTranslationManagerPlugin;
+use TomatoPHP\FilamentUsers\FilamentUsersPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -55,7 +58,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(\TomatoPHP\FilamentUsers\FilamentUsersPlugin::make())
-            ->plugin(\BezhanSalleh\FilamentShield\FilamentShieldPlugin::make());
+            ->plugin(FilamentUsersPlugin::make())
+            ->plugin(FilamentShieldPlugin::make())
+            ->plugin(FilamentChainedTranslationManagerPlugin::make());
     }
 }
