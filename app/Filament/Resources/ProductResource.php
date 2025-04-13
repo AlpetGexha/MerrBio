@@ -107,6 +107,9 @@ class ProductResource extends Resource
 
     public static function canAccess(): bool
     {
+        if(auth()->user() === null) {
+            return false;
+        }
         return auth()->user()->hasRole('admin') || auth()->user()->hasRole('farmer');
     }
 }

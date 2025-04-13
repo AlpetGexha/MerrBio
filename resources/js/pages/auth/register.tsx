@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth/auth-split-layout';
 import { cn } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type RegisterForm = {
     name: string;
@@ -106,16 +107,16 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="is_farmer">
-                            <input
-                                type={'checkbox'}
-                                className={cn(
-                                    'peer border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
-                                )}
+                        <div className="flex items-center space-x-3">
+                            <Checkbox
+                                id="remember"
+                                name="remember"
+                                checked={data.is_farmer}
+                                onClick={() => setData('is_farmer', !data.is_farmer)}
+                                tabIndex={3}
                             />
-                            <span className="ml-2">Register as farmer</span>
-                        </Label>
-                        <InputError message={errors.is_farmer} />
+                            <Label htmlFor="remember">Register as a farmer</Label>
+                        </div>
                     </div>
 
                     <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>

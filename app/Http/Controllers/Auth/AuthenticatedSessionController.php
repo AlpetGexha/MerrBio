@@ -34,16 +34,25 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+
+
         $user = Auth::user();
         $user->load('roles');
 
         $role = $user->getRoleNames()[0];
 
-        return response()->json([
-            'user' => $user,
-            'role' => $role,
-            'token' => $user->createToken('API FOR' . $user->email . '-' . $request->device_name)->plainTextToken,
-        ]);
+//        return Inertia::location('https://32b8-193-254-1-161.ngrok-free.app/');
+
+        return Inertia::location('https://merrbio-frontend.onrender.com/');
+
+//        return Inertia::location('https://merrbio-frontend.onrender.com/');
+
+        //        return redirect()->intended(route('dashboard', absolute: false));
+//        return response()->json([
+//            'user' => $user,
+//            'role' => $role,
+//            'token' => $user->createToken('API FOR' . $user->email . '-' . $request->device_name)->plainTextToken,
+//        ]);
 
 //                return redirect()->intended(route('dashboard', absolute: false));
     }
