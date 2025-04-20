@@ -11,11 +11,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+// use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_FARMER = 'farmer';
+    public const ROLE_USER = 'user';
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +31,14 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'zip_code',
+        'country',
+        'is_farmer',
     ];
 
     /**
@@ -46,6 +59,7 @@ class User extends Authenticatable implements FilamentUser
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_farmer' => 'boolean',
     ];
 
     /**
@@ -55,7 +69,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return Str::of($this->name)
             ->explode(' ')
-            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
 
@@ -83,4 +97,25 @@ class User extends Authenticatable implements FilamentUser
     {
         return true;
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isFarmer(): bool
+    {
+        return $this->role === self::ROLE_FARMER;
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === self::ROLE_USER;
+    }
+
+    public function farmerProducts()
+    {
+        return $this->hasMany(Product::class, 'farmer_id');
+    }
+
 }

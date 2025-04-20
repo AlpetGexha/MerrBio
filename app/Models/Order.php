@@ -12,14 +12,11 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'uuid',
         'user_id',
-        'account_id',
+        'farmer_id',
         'status',
         'total_amount',
-        'currency',
-        'shipping_address',
-        'billing_address',
+        'shipping_address_id',
         'payment_method',
         'payment_status',
     ];
@@ -35,13 +32,18 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function shippingAddress(): BelongsTo
+    public function farmer(): BelongsTo
     {
-        return $this->belongsTo(ShippingAddress::class);
+        return $this->belongsTo(User::class, 'farmer_id');
     }
 
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function shippingAddress(): BelongsTo
+    {
+        return $this->belongsTo(ShippingAddress::class);
     }
 }

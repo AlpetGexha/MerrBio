@@ -11,6 +11,16 @@ class Product extends ProdcutBase
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'stock',
+        'image',
+        'category_id',
+        'farmer_id',
+    ];
+
     public function getNameAttribute($value)
     {
         if (is_array($value)) {
@@ -95,6 +105,11 @@ class Product extends ProdcutBase
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function farmer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'farmer_id');
     }
 
     public function cartItems(): HasMany
