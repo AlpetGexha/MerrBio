@@ -8,7 +8,10 @@ use App\Livewire\ShoppingCart;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-// Public routes
+Route::get('/home', function () {
+    return view('welcome');
+})->name('home');
+
 Route::get('/', ProductListing::class)->name('products.index');
 Route::get('/cart', ShoppingCart::class)->name('cart.index');
 Route::get('/products/{product}', ProductDetail::class)->name('products.show');

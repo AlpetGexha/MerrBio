@@ -14,7 +14,11 @@ class ShoppingCart extends Component
     #[Computed]
     public function cartItems()
     {
-        return Auth::user()->cartItems()->with('product')->get();
+        if (Auth::check()) {
+            return Auth::user()->cartItems()->with('product')->get();
+        }
+
+        return [];
     }
 
     #[Computed]

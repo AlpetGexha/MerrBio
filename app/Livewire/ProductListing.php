@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,21 +13,17 @@ class ProductListing extends Component
 {
     use WithPagination;
 
-    public $search = '';
+    #[Url]
+    public string $search = '';
 
-    public $filters = [
-        'category' => '',
-        'price_range' => '',
+    #[Url]
+    public array $filters = [
+        'category' => null,
+        'min_price' => null,
+        'max_price' => null,
         'in_stock' => false,
         'sort_by' => 'created_at',
         'sort_direction' => 'desc',
-        'min_price' => '',
-        'max_price' => '',
-    ];
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'filters' => ['except' => []],
     ];
 
     public function updatingSearch()
@@ -45,14 +42,61 @@ class ProductListing extends Component
         $this->resetPage();
     }
 
+    public function addToCart($productId)
+    {
+        if (!Auth::check()) {
+            session()->flash('notification', [
+                'type' => 'error',
+                'message' => 'Please login to add items to cart',
+            ]);
+            return redirect()->route('login');
+        }
+
+        $product = Product::findOrFail($productId);
+
+        if (!$product->canBeAddedToCart()) {
+            session()->flash('notification', [
+                'type' => 'error',
+                'message' => 'This product is out of stock',
+            ]);
+            return;
+        }
+
+        $user = Auth::user();
+        $cartItem = $user->cartItems()->where('product_id', $productId)->first();
+
+        if ($cartItem) {
+            if ($cartItem->quantity >= $product->getMaxCartQuantity()) {
+                session()->flash('notification', [
+                    'type' => 'error',
+                    'message' => 'Maximum quantity reached for this product',
+                ]);
+                return;
+            }
+            $cartItem->increment('quantity');
+        } else {
+            $user->cartItems()->create([
+                'product_id' => $productId,
+                'quantity' => 1,
+            ]);
+        }
+
+        $this->dispatch('cartUpdated')->to(CartCount::class);
+
+        session()->flash('notification', [
+            'type' => 'success',
+            'message' => 'Product added to cart successfully!',
+        ]);
+    }
+
     public function render()
     {
         $query = Product::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ['%'.$this->search.'%'])
-                        ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ['%'.$this->search.'%'])
-                        ->orWhere('sku', 'LIKE', '%'.$this->search.'%');
+                    $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ['%' . $this->search . '%'])
+                      ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ['%' . $this->search . '%'])
+                      ->orWhere('sku', 'LIKE', '%' . $this->search . '%');
                 });
             })
             ->when($this->filters['category'], function ($query) {
@@ -74,41 +118,6 @@ class ProductListing extends Component
         return view('livewire.product-listing', [
             'products' => $query->paginate(12),
             'categories' => Category::all(),
-        ]);
-    }
-
-    public function addToCart($productId)
-    {
-        if (! Auth::check()) {
-            session()->flash('notification', [
-                'type' => 'error',
-                'message' => 'Please login to add items to cart',
-            ]);
-
-            return;
-        }
-
-        $product = Product::findOrFail($productId);
-        $user = Auth::user();
-
-        // Check if product is already in cart
-        $cartItem = $user->cartItems()->where('product_id', $productId)->first();
-
-        if ($cartItem) {
-            $cartItem->increment('quantity');
-        } else {
-            $user->cartItems()->create([
-                'product_id' => $productId,
-                'quantity' => 1,
-            ]);
-        }
-
-        // Dispatch event to update cart count
-        $this->dispatch('cartUpdated')->to(CartCount::class);
-
-        session()->flash('notification', [
-            'type' => 'success',
-            'message' => 'Product added to cart successfully!',
         ]);
     }
 }
