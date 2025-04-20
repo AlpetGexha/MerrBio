@@ -71,7 +71,7 @@
                         <span class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ number_format($product->price, 2) }} {{ $product->currency }}</span>
 
                         <button wire:click="addToCart({{ $product->id }})"
-                                class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+                                class="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-em-500 focus:ring-offset-2 dark:bg-emerald-500 dark:hover:bg-emerald-600">
                             Add to Cart
                         </button>
                     </div>
