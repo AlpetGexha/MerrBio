@@ -5,8 +5,6 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,6 +13,7 @@ class ProductListing extends Component
     use WithPagination;
 
     public $search = '';
+
     public $filters = [
         'category' => '',
         'price_range' => '',
@@ -51,9 +50,9 @@ class ProductListing extends Component
         $query = Product::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ['%' . $this->search . '%'])
-                      ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ['%' . $this->search . '%'])
-                      ->orWhere('sku', 'LIKE', '%' . $this->search . '%');
+                    $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ['%'.$this->search.'%'])
+                        ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ['%'.$this->search.'%'])
+                        ->orWhere('sku', 'LIKE', '%'.$this->search.'%');
                 });
             })
             ->when($this->filters['category'], function ($query) {

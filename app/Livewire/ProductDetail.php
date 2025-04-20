@@ -17,19 +17,21 @@ class ProductDetail extends Component
 
     public function addToCart()
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             session()->flash('notification', [
                 'type' => 'error',
                 'message' => 'Please login to add items to cart',
             ]);
+
             return;
         }
 
-        if (!$this->product->canBeAddedToCart()) {
+        if (! $this->product->canBeAddedToCart()) {
             session()->flash('notification', [
                 'type' => 'error',
                 'message' => 'This product is out of stock',
             ]);
+
             return;
         }
 

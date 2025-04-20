@@ -1,16 +1,12 @@
 <?php
 
 use App\Livewire\Checkout;
-use App\Livewire\OrderConfirmation;
+use App\Livewire\Dashboard;
+use App\Livewire\ProductDetail;
 use App\Livewire\ProductListing;
 use App\Livewire\ShoppingCart;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-use App\Livewire\ProductDetail;
-use App\Livewire\OrderList;
-use App\Livewire\OrderDetail;
-use App\Livewire\Dashboard;
-use App\Livewire\Cart;
 
 // Public routes
 Route::get('/', ProductListing::class)->name('products.index');
@@ -37,4 +33,4 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

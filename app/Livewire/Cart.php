@@ -3,18 +3,19 @@
 namespace App\Livewire;
 
 use App\Models\CartItem;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class Cart extends Component
 {
     public function removeFromCart($cartItemId)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             session()->flash('notification', [
                 'type' => 'error',
                 'message' => 'Please login to manage your cart',
             ]);
+
             return;
         }
 
@@ -26,6 +27,7 @@ class Cart extends Component
                 'type' => 'error',
                 'message' => 'You do not have permission to remove this item',
             ]);
+
             return;
         }
 
@@ -42,11 +44,12 @@ class Cart extends Component
 
     public function updateQuantity($cartItemId, $quantity)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             session()->flash('notification', [
                 'type' => 'error',
                 'message' => 'Please login to manage your cart',
             ]);
+
             return;
         }
 
@@ -58,6 +61,7 @@ class Cart extends Component
                 'type' => 'error',
                 'message' => 'You do not have permission to update this item',
             ]);
+
             return;
         }
 
