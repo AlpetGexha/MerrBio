@@ -2,49 +2,46 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasDefaultTenant;
+use Filament\Models\Contracts\HasTenants;
+use Illuminate\Support\Str;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
-// use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Collection;
+use Laravel\Sanctum\HasApiTokens;
+use Wallo\FilamentCompanies\HasCompanies;
+use Wallo\FilamentCompanies\HasProfilePhoto;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasTenants
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_FARMER = 'farmer';
-    public const ROLE_USER = 'user';
+    // use HasApiTokens;
+    use HasCompanies;
+    use HasFactory;
+    use HasProfilePhoto;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
-        'phone',
-        'address',
-        'city',
-        'state',
-        'zip_code',
-        'country',
-        'is_farmer',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -52,30 +49,50 @@ class User extends Authenticatable implements FilamentUser
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'profile_photo_url',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'is_farmer' => 'boolean',
-    ];
-
-    /**
-     * Get the user's initials
-     */
-    public function initials(): string
+    protected function casts(): array
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
-            ->implode('');
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
-    public function cartItems(): HasMany
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasMany(CartItem::class);
+        return true;
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->belongsToCompany($tenant);
+    }
+
+    public function getTenants(Panel $panel): array | Collection
+    {
+        return $this->allCompanies();
+    }
+
+    public function getDefaultTenant(Panel $panel): ?Model
+    {
+        return $this->currentCompany;
+    }
+
+    public function getFilamentAvatarUrl(): string
+    {
+        return $this->profile_photo_url;
     }
 
     public function orders(): HasMany
@@ -88,34 +105,30 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(ShippingAddress::class);
     }
 
+    public function initials(): string
+    {
+        return Str::of($this->name)
+            ->explode(' ')
+            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
+            ->implode('');
+    }
+
+
     public function defaultShippingAddress(): HasOne
     {
         return $this->hasOne(ShippingAddress::class)->where('is_default', true);
     }
 
-    public function canAccessPanel(\Filament\Panel $panel): bool
+    // cartItems
+    public function cartItems(): HasMany
     {
-        return true;
+        return $this->hasMany(CartItem::class);
     }
 
-    public function isAdmin(): bool
-    {
-        return $this->role === self::ROLE_ADMIN;
-    }
-
+    // isFarmer
     public function isFarmer(): bool
     {
-        return $this->role === self::ROLE_FARMER;
-    }
-
-    public function isUser(): bool
-    {
-        return $this->role === self::ROLE_USER;
-    }
-
-    public function farmerProducts()
-    {
-        return $this->hasMany(Product::class, 'farmer_id');
+        return $this->role === 'farmer';
     }
 
 }

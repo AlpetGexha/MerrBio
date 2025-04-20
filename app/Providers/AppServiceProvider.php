@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use TomatoPHP\FilamentEcommerce\Models\Coupon;
 
 class AppServiceProvider extends ServiceProvider
 {

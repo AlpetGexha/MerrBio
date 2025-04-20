@@ -19,6 +19,25 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use TomatoPHP\FilamentEcommerce\FilamentEcommercePlugin;
+use App\Actions\FilamentCompanies\AddCompanyEmployee;
+use App\Actions\FilamentCompanies\CreateNewUser;
+use App\Actions\FilamentCompanies\DeleteCompany;
+use App\Actions\FilamentCompanies\DeleteUser;
+use App\Actions\FilamentCompanies\InviteCompanyEmployee;
+use App\Actions\FilamentCompanies\RemoveCompanyEmployee;
+use App\Actions\FilamentCompanies\UpdateCompanyName;
+use App\Actions\FilamentCompanies\UpdateUserPassword;
+use App\Actions\FilamentCompanies\UpdateUserProfileInformation;
+use App\Models\Company;
+use Filament\Facades\Filament;use Filament\Navigation\MenuItem;
+use Illuminate\Support\Facades\Auth;
+use Wallo\FilamentCompanies\FilamentCompanies;
+use Wallo\FilamentCompanies\Pages\Auth\Login;
+use Wallo\FilamentCompanies\Pages\Auth\Register;
+use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
+use Wallo\FilamentCompanies\Pages\Company\CreateCompany;
+use Wallo\FilamentCompanies\Pages\User\Profile;
+
 
 class AppPanelProvider extends PanelProvider
 {
@@ -31,6 +50,11 @@ class AppPanelProvider extends PanelProvider
                 'primary' => Color::Emerald,
                 'gray' => Color::Slate,
             ])
+            ->tenant(Company::class)
+            ->tenantProfile(CompanySettings::class)
+            ->tenantRegistration(CreateCompany::class)
+            // ->registration(Register::class)
+
             ->sidebarFullyCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
@@ -67,8 +91,26 @@ class AppPanelProvider extends PanelProvider
                     ->useAccounts(false)
                     ->useOrderSettings(false)
                     ->useSettings(false)
+                    // ->useShippingVendor(false)
+                    ->useCompany(false)
                 //                    ->showOrderAccount(false)
                 //                    ->allowOrderCreate(false)
+            )
+            ->plugin(
+                FilamentCompanies::make()
+                    ->userPanel('admin')
+                    ->switchCurrentCompany()
+                    ->updateProfileInformation()
+                    ->updatePasswords()
+                    ->manageBrowserSessions()
+                    ->accountDeletion()
+                    ->profilePhotos()
+                    ->api()
+                    ->companies(invitations: true)
+                    ->autoAcceptInvitations()
+                    ->termsAndPrivacyPolicy()
+                    ->notifications()
+                    ->modals(),
             );
     }
 }
