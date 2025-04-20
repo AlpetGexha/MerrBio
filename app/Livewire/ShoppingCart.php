@@ -10,6 +10,7 @@ use Livewire\Component;
 class ShoppingCart extends Component
 {
     public array $quantity = [];
+    public array $itemTotals = [];
 
     #[Computed]
     public function cartItems()
@@ -29,17 +30,24 @@ class ShoppingCart extends Component
         });
     }
 
+    public function calculateItemTotal($quantity, $price)
+    {
+        return number_format($quantity * $price, 2);
+    }
+
     public function updateQuantity($cartItemId, $quantity)
     {
         $cartItem = CartItem::find($cartItemId);
         if ($cartItem && $quantity > 0) {
             $cartItem->update(['quantity' => $quantity]);
+            $this->dispatch('cart-updated');
         }
     }
 
     public function removeItem($cartItemId)
     {
         CartItem::destroy($cartItemId);
+        $this->dispatch('cart-updated');
     }
 
     public function checkout()

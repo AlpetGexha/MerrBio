@@ -5,7 +5,32 @@
         <div class="bg-white dark:bg-zinc-900 rounded-lg shadow overflow-hidden">
             <div class="divide-y divide-zinc-200 dark:divide-zinc-700">
                 @foreach ($this->cartItems as $item)
-                    <div class="p-6">
+                    <div class="p-6"
+                        x-data="{
+                            quantity: {{ $item->quantity }},
+                            price: {{ $item->product->price }},
+                            currency: '{{ $item->product->currency }}',
+                            debounceTimer: null,
+                            updateQuantity() {
+                                clearTimeout(this.debounceTimer);
+                                this.debounceTimer = setTimeout(() => {
+                                    this.$wire.updateQuantity({{ $item->id }}, this.quantity);
+                                }, 1000);
+                            },
+                            increment() {
+                                this.quantity++;
+                                this.updateQuantity();
+                            },
+                            decrement() {
+                                if (this.quantity > 1) {
+                                    this.quantity--;
+                                    this.updateQuantity();
+                                }
+                            },
+                            get itemTotal() {
+                                return (this.quantity * this.price).toFixed(2);
+                            }
+                        }">
                         <div class="flex items-center">
                             <img src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}"
                                 class="w-20 h-20 object-cover rounded">
@@ -19,16 +44,19 @@
 
                             <div class="flex items-center space-x-4">
                                 <div class="flex items-center">
-                                    <button wire:click="updateQuantity({{ $item->id }}, {{ $item->quantity - 1 }})"
+                                    <button @click="decrement()"
                                         class="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200">
                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M20 12H4" />
                                         </svg>
                                     </button>
-                                    <input type="number" wire:model.live="quantity.{{ $item->id }}" min="1"
+                                    <input type="number"
+                                        x-model="quantity"
+                                        min="1"
+                                        @input="updateQuantity()"
                                         class="w-16 text-center border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-zinc-100">
-                                    <button wire:click="updateQuantity({{ $item->id }}, {{ $item->quantity + 1 }})"
+                                    <button @click="increment()"
                                         class="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200">
                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -38,8 +66,7 @@
                                 </div>
 
                                 <span class="text-lg font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{ number_format($item->product->price * $item->quantity, 2) }}
-                                    {{ $item->product->currency }}
+                                    $<span x-text="itemTotal"></span> {{ $item->product->currency }}
                                 </span>
 
                                 <button wire:click="removeItem({{ $item->id }})"
@@ -77,7 +104,6 @@
             <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Start adding some items to your cart</p>
             <div class="mt-6">
                 @auth
-
                     <a href="{{ route('products.index') }}"
                         class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600">
                         Continue Shopping
@@ -88,7 +114,6 @@
                         Login to Continue Shopping
                     </a>
                 @endauth
-
             </div>
         </div>
     @endif
