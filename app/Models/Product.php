@@ -8,31 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use TomatoPHP\FilamentEcommerce\Models\Product as ProdcutBase;
 
-class Product extends Model implements HasMedia
+class Product extends ProdcutBase
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'price',
-        'currency',
-        'sku',
-        'is_in_stock',
-        'stock_quantity',
-        'category_id',
-        'keywords',
-    ];
-
-    protected $casts = [
-        'name' => 'json',
-        'description' => 'json',
-        'keywords' => 'json',
-        'price' => 'decimal:2',
-        'is_in_stock' => 'boolean',
-        'stock_quantity' => 'integer',
-    ];
 
     public function getNameAttribute($value)
     {
@@ -84,7 +65,35 @@ class Product extends Model implements HasMedia
 
     public function canBeAddedToCart(): bool
     {
-        return $this->is_in_stock && $this->stock_quantity > 0;
+        if ($this->is_in_stock) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the maximum quantity that can be added to cart
+     */
+    public function getMaxCartQuantity(): int
+    {
+        if ($this->has_unlimited_stock) {
+            return $this->has_max_cart ? $this->max_cart : PHP_INT_MAX;
+        }
+
+        if ($this->has_max_cart) {
+            return min($this->max_cart, $this->stock_quantity);
+        }
+
+        return $this->stock_quantity;
+    }
+
+    /**
+     * Get the minimum quantity that should be added to cart
+     */
+    public function getMinCartQuantity(): int
+    {
+        return $this->has_max_cart ? $this->min_cart : 1;
     }
 
     public function category(): BelongsTo
