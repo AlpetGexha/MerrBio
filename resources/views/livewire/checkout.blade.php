@@ -8,7 +8,20 @@
                     <!-- Shipping Address -->
                     <div class="space-y-4">
                         <h3 class="text-lg font-semibold">Shipping Address</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        @if($addresses->isNotEmpty())
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Select a saved address</label>
+                                <select wire:model.live="selected_address_id" class="w-full rounded-md border-zinc-300 dark:border-zinc-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-zinc-100">
+                                    <option value="">Enter new address</option>
+                                    @foreach($addresses as $address)
+                                        <option value="{{ $address->id }}">{{ $address->full_address }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="$wire.show_address_fields">
                             <div>
                                 <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Street</label>
                                 <input type="text" wire:model="shipping_address.street" class="mt-1 block w-full rounded-md border-zinc-300 dark:border-zinc-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-zinc-100">
@@ -29,6 +42,11 @@
                                 <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Country</label>
                                 <input type="text" wire:model="shipping_address.country" class="mt-1 block w-full rounded-md border-zinc-300 dark:border-zinc-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-zinc-800 dark:text-zinc-100">
                             </div>
+                        </div>
+
+                        <div class="flex items-center" x-show="$wire.show_address_fields">
+                            <input type="checkbox" wire:model="save_address" id="save_address" class="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700 text-indigo-600 focus:ring-indigo-500">
+                            <label for="save_address" class="ml-2 block text-sm text-zinc-700 dark:text-zinc-300">Save this address for future use</label>
                         </div>
                     </div>
 

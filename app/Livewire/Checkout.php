@@ -4,13 +4,43 @@ namespace App\Livewire;
 
 use App\Models\Account;
 use App\Models\Order;
+use App\Models\ShippingAddress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Livewire\Attributes\Rule;
 
 class Checkout extends Component
 {
+    #[Rule('required|string|max:255')]
+    public string $name = '';
+
+    #[Rule('required|string|max:255')]
+    public string $phone = '';
+
+    #[Rule('required|string|max:255')]
+    public string $address_line1 = '';
+
+    #[Rule('nullable|string|max:255')]
+    public ?string $address_line2 = null;
+
+    #[Rule('required|string|max:255')]
+    public string $city = '';
+
+    #[Rule('required|string|max:255')]
+    public string $state = '';
+
+    #[Rule('required|string|max:255')]
+    public string $postal_code = '';
+
+    #[Rule('required|string|max:255')]
+    public string $country = '';
+
+    public bool $save_address = true;
+    public ?int $selected_address_id = null;
+    public bool $show_address_fields = true;
+
     public array $shipping_address = [
         'street' => '',
         'city' => '',
@@ -31,18 +61,45 @@ class Checkout extends Component
 
     public bool $same_as_shipping = true;
 
-    #[Computed]
-    public function cartItems()
+    public function mount()
     {
-        return Auth::user()->cartItems()->with('product')->get();
+        if ($defaultAddress = Auth::user()->defaultShippingAddress) {
+            $this->selected_address_id = $defaultAddress->id;
+            $this->shipping_address = [
+                'street' => $defaultAddress->address_line1,
+                'city' => $defaultAddress->city,
+                'state' => $defaultAddress->state,
+                'zip_code' => $defaultAddress->postal_code,
+                'country' => $defaultAddress->country,
+            ];
+            $this->show_address_fields = false;
+        }
     }
 
-    #[Computed]
-    public function total()
+    public function updatedSelectedAddressId($value)
     {
-        return $this->cartItems->sum(function ($item) {
-            return $item->quantity * $item->product->price;
-        });
+        if ($value) {
+            $address = ShippingAddress::find($value);
+            if ($address) {
+                $this->shipping_address = [
+                    'street' => $address->address_line1,
+                    'city' => $address->city,
+                    'state' => $address->state,
+                    'zip_code' => $address->postal_code,
+                    'country' => $address->country,
+                ];
+                $this->show_address_fields = false;
+            }
+        } else {
+            $this->shipping_address = [
+                'street' => '',
+                'city' => '',
+                'state' => '',
+                'zip_code' => '',
+                'country' => '',
+            ];
+            $this->show_address_fields = true;
+        }
     }
 
     public function placeOrder()
@@ -60,6 +117,23 @@ class Checkout extends Component
                 'is_login' => true,
             ]
         );
+
+        // Save shipping address if requested and a new address was entered
+        if ($this->save_address && $this->show_address_fields) {
+            $address = $user->shippingAddresses()->create([
+                'name' => $user->name,
+                'phone' => $user->phone ?? '',
+                'address_line1' => $this->shipping_address['street'],
+                'address_line2' => null,
+                'city' => $this->shipping_address['city'],
+                'state' => $this->shipping_address['state'],
+                'postal_code' => $this->shipping_address['zip_code'],
+                'country' => $this->shipping_address['country'],
+                'is_default' => true,
+            ]);
+
+            $address->setAsDefault();
+        }
 
         $order = Order::create([
             'uuid' => Str::uuid(),
@@ -97,8 +171,24 @@ class Checkout extends Component
         return $this->redirect(route('orders.show', $order));
     }
 
+    #[Computed]
+    public function cartItems()
+    {
+        return Auth::user()->cartItems()->with('product')->get();
+    }
+
+    #[Computed]
+    public function total()
+    {
+        return $this->cartItems->sum(function ($item) {
+            return $item->quantity * $item->product->price;
+        });
+    }
+
     public function render()
     {
-        return view('livewire.checkout');
+        return view('livewire.checkout', [
+            'addresses' => Auth::user()->shippingAddresses()->latest()->get(),
+        ]);
     }
 }
