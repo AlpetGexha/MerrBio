@@ -53,25 +53,37 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @foreach($this->products as $product)
             <div class="bg-white dark:bg-zinc-900 rounded-lg shadow overflow-hidden">
-                <div class="relative">
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
-                    @if($product->is_in_stock)
-                        <div class="absolute top-2 right-2">
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                                In Stock
-                            </span>
-                        </div>
-                    @endif
-                </div>
+                <a href="{{ route('products.show', $product) }}" class="block relative">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
+                         class="w-full h-48 object-cover">
+                </a>
                 <div class="p-4">
-                    <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ $product->name }}</h3>
-                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ Str::limit($product->description, 100) }}</p>
-
+                    <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                        <a href="{{ route('products.show', $product) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+                            {{ $product->name }}
+                        </a>
+                    </h3>
+                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                        {{ Str::limit($product->description, 100) }}
+                    </p>
                     <div class="mt-4 flex items-center justify-between">
-                        <span class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ number_format($product->price, 2) }} {{ $product->currency }}</span>
-
+                        <span class="text-lg font-semibold text-indigo-600 dark:text-indigo-400">
+                            ${{ number_format($product->price, 2) }}
+                        </span>
+                        @if($product->canBeAddedToCart())
+                            <span class="text-sm text-green-600 dark:text-green-400">
+                                {{ $product->stock_quantity }} available
+                            </span>
+                        @else
+                            <span class="text-sm text-red-600 dark:text-red-400">
+                                Out of Stock
+                            </span>
+                        @endif
+                    </div>
+                    <div class="mt-4">
                         <button wire:click="addToCart({{ $product->id }})"
-                                class="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-em-500 focus:ring-offset-2 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                                class="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-md font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                {{ !$product->canBeAddedToCart() ? 'disabled' : '' }}>
                             Add to Cart
                         </button>
                     </div>

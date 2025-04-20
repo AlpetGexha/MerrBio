@@ -6,15 +6,20 @@ use App\Livewire\ProductListing;
 use App\Livewire\ShoppingCart;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Livewire\ProductDetail;
+use App\Livewire\OrderList;
+use App\Livewire\OrderDetail;
+use App\Livewire\Dashboard;
+use App\Livewire\Cart;
 
 // Public routes
 Route::get('/', ProductListing::class)->name('products.index');
 Route::get('/cart', ShoppingCart::class)->name('cart.index');
+Route::get('/products/{product}', ProductDetail::class)->name('products.show');
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', Checkout::class)->name('checkout');
-    // Route::get('/orders/{order}', OrderConfirmation::class)->name('orders.show');
     Route::get('/orders', \App\Livewire\OrderList::class)->name('orders.index');
     Route::get('/orders/{order}', \App\Livewire\OrderDetail::class)->name('orders.show');
 });
@@ -32,4 +37,4 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -36,19 +36,55 @@ class Product extends Model implements HasMedia
 
     public function getNameAttribute($value)
     {
-        $value = json_decode($value, true);
+        if (is_array($value)) {
+            return $value['en'] ?? '';
+        }
 
-        return $value[app()->getLocale()] ?? array_values($value)[0] ?? '';
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded['en'] ?? '';
+            }
+        }
+
+        return $value;
     }
 
     public function getDescriptionAttribute($value)
     {
-        // if (is_string($value)) {
-        //     return $value;
-        // }
-        $value = json_decode($value, true);
+        if (is_array($value)) {
+            return $value['en'] ?? '';
+        }
 
-        return $value[app()->getLocale()] ?? array_values($value)[0] ?? '';
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded['en'] ?? '';
+            }
+        }
+
+        return $value;
+    }
+
+    public function getKeywordsAttribute($value)
+    {
+        if (is_array($value)) {
+            return $value['en'] ?? [];
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded['en'] ?? [];
+            }
+        }
+
+        return [];
+    }
+
+    public function canBeAddedToCart(): bool
+    {
+        return $this->is_in_stock && $this->stock_quantity > 0;
     }
 
     public function category(): BelongsTo
