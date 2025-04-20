@@ -9,7 +9,7 @@
      x-transition:leave-start="opacity-100 transform translate-y-0"
      x-transition:leave-end="opacity-0 transform translate-y-2"
      x-init="setTimeout(() => show = false, 3000)"
-     class="fixed top-4 right-4 z-50">
+     class="fixed top-4 right-4 z-[9999]">
     <div @class([
         'px-4 py-3 rounded-lg shadow-lg',
         'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' => $type === 'success',

@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Account;
 use App\Models\Order;
-use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;

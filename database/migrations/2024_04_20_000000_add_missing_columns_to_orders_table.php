@@ -14,22 +14,22 @@ return new class extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            if (!Schema::hasColumn('orders', 'total_amount')) {
+            if (! Schema::hasColumn('orders', 'total_amount')) {
                 $table->decimal('total_amount', 10, 2)->default(0);
             }
-            if (!Schema::hasColumn('orders', 'currency')) {
+            if (! Schema::hasColumn('orders', 'currency')) {
                 $table->string('currency', 3)->default('USD');
             }
-            if (!Schema::hasColumn('orders', 'shipping_address')) {
+            if (! Schema::hasColumn('orders', 'shipping_address')) {
                 $table->json('shipping_address')->nullable();
             }
-            if (!Schema::hasColumn('orders', 'billing_address')) {
+            if (! Schema::hasColumn('orders', 'billing_address')) {
                 $table->json('billing_address')->nullable();
             }
-            if (!Schema::hasColumn('orders', 'payment_status')) {
+            if (! Schema::hasColumn('orders', 'payment_status')) {
                 $table->string('payment_status')->default('pending');
             }
-            if (!Schema::hasColumn('orders', 'order_number')) {
+            if (! Schema::hasColumn('orders', 'order_number')) {
                 $table->string('order_number')->unique()->nullable();
             }
         });
@@ -49,7 +49,7 @@ return new class extends Migration
                 'shipping_address',
                 'billing_address',
                 'payment_status',
-                'order_number'
+                'order_number',
             ];
 
             foreach ($columns as $column) {

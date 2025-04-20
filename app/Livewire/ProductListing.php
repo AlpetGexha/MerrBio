@@ -70,11 +70,12 @@ class ProductListing extends Component
 
     public function addToCart($productId)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             session()->flash('notification', [
                 'type' => 'error',
-                'message' => 'Please login to add items to cart'
+                'message' => 'Please login to add items to cart',
             ]);
+
             return;
         }
 
@@ -89,16 +90,16 @@ class ProductListing extends Component
         } else {
             $user->cartItems()->create([
                 'product_id' => $productId,
-                'quantity' => 1
+                'quantity' => 1,
             ]);
         }
 
         // Dispatch event to update cart count
-        $this->dispatch('cartUpdated');
+        $this->dispatch('cartUpdated')->to(CartCount::class);
 
         session()->flash('notification', [
             'type' => 'success',
-            'message' => 'Product added to cart successfully!'
+            'message' => 'Product added to cart successfully!',
         ]);
     }
 

@@ -23,11 +23,7 @@
 
                 <flux:navbar.item icon="shopping-cart" :href="route('cart.index')" :current="request()->routeIs('cart.index')" wire:navigate>
                     {{ __('Cart') }}
-                    @if(auth()->check() && auth()->user()->cartItems()->count() > 0)
-                        <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-indigo-600 rounded-full dark:bg-indigo-500">
-                            {{ auth()->user()->cartItems()->count() }}
-                        </span>
-                    @endif
+                    <livewire:cart-count />
                 </flux:navbar.item>
 
                 {{-- Orders --}}

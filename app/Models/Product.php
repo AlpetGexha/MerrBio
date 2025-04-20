@@ -36,9 +36,6 @@ class Product extends Model implements HasMedia
 
     public function getNameAttribute($value)
     {
-        if (is_string($value)) {
-            return $value;
-        }
         $value = json_decode($value, true);
 
         return $value[app()->getLocale()] ?? array_values($value)[0] ?? '';
@@ -46,9 +43,9 @@ class Product extends Model implements HasMedia
 
     public function getDescriptionAttribute($value)
     {
-        if (is_string($value)) {
-            return $value;
-        }
+        // if (is_string($value)) {
+        //     return $value;
+        // }
         $value = json_decode($value, true);
 
         return $value[app()->getLocale()] ?? array_values($value)[0] ?? '';
