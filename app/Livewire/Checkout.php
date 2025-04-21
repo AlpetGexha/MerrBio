@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Account;
 use App\Models\Order;
 use App\Models\ShippingAddress;
+use Filament\Notifications\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -40,6 +41,7 @@ class Checkout extends Component
     public bool $save_address = true;
     public ?int $selected_address_id = null;
     public bool $show_address_fields = true;
+    public  $ordersCollection = [];
 
     public array $shipping_address = [
         'street' => '',
@@ -102,19 +104,14 @@ class Checkout extends Component
         }
     }
 
-    public function checkout()
+    protected function saveShippingAddressIfRequired()
     {
-        $user = Auth::user();
-
-        // Find or create an account for the user
-
-        // Save shipping address if requested and a new address was entered
         if ($this->save_address && $this->show_address_fields) {
-            $address = $user->shippingAddresses()->create([
-                'name' => $user->name,
-                'phone' => $user->phone ?? '',
+            $address = Auth::user()->shippingAddresses()->create([
+                'name' => $this->name,
+                'phone' => $this->phone,
                 'address_line1' => $this->shipping_address['street'],
-                'address_line2' => null,
+                'address_line2' => $this->address_line2,
                 'city' => $this->shipping_address['city'],
                 'state' => $this->shipping_address['state'],
                 'postal_code' => $this->shipping_address['zip_code'],
@@ -124,7 +121,11 @@ class Checkout extends Component
 
             $address->setAsDefault();
         }
+    }
 
+
+    protected function seperateOrderByCompany()
+    {
         // Group cart items by company
         $cartItemsByCompany = $this->cartItems->groupBy(function ($item) {
             return $item->product->company_id;
@@ -136,8 +137,8 @@ class Checkout extends Component
         foreach ($cartItemsByCompany as $companyId => $companyCartItems) {
             $order = Order::create([
                 'uuid' => Str::uuid(),
-                'user_id' => $user->id,
-                'account_id' => $account->id,
+                'user_id' => auth()->id(),
+                'account_id' => 1,
                 'company_id' => $companyId,
                 'status' => 'pending',
                 'total_amount' => $companyCartItems->sum(function ($item) {
@@ -153,7 +154,7 @@ class Checkout extends Component
             foreach ($companyCartItems as $item) {
                 $order->items()->create([
                     'product_id' => $item->product_id,
-                    'account_id' => $account->id,
+                    'account_id' => 1,
                     'item' => $item->product->name,
                     'price' => $item->product->price,
                     'qty' => $item->quantity,
@@ -168,29 +169,36 @@ class Checkout extends Component
                 ]);
             }
 
+            // on order collection save the fisrt order and the order count
+
+
+
+
             $orders->push($order);
+
+            $data = [
+                'order' => $orders->first(),
+                'order_count' => $orders->count(),
+            ];
+
+            $this->ordersCollection = $data;
         }
+    }
 
-        $account = Account::firstOrCreate(
-            ['email' => $user->email],
-            [
-                'name' => $user->name,
-                'username' => $user->email,
-                'type' => 'customer',
-                'is_active' => true,
-                'is_login' => true,
-            ]
-        );
 
-        // Clear the cart
+    public function checkout()
+    {
+        $user = Auth::user();
+
+        $this->saveShippingAddressIfRequired();
+        $this->seperateOrderByCompany();
+
         $user->cartItems()->delete();
 
-        // If there's only one order, redirect to it directly
-        if ($orders->count() === 1) {
-            return $this->redirect(route('orders.show', $orders->first()));
+        if ($this->ordersCollection['order_count'] === 1) {
+            return $this->redirect(route('orders.show', $this->ordersCollection['order']));
         }
 
-        // If multiple orders, redirect to orders list
         return $this->redirect(route('orders.index'));
     }
 
