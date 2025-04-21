@@ -45,7 +45,7 @@ class CreateNewUser implements CreatesNewUsers
         $user->ownedCompanies()->save(Company::forceCreate([
             'user_id' => $user->id,
             'name' => explode(' ', $user->name, 2)[0] . "'s Company",
-            'personal_company' => true,
+            'personal_company' => filter_var(true, FILTER_VALIDATE_BOOLEAN),
         ]));
     }
 }
