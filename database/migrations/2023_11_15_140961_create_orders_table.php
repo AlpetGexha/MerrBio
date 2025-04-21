@@ -33,7 +33,7 @@ return new class extends Migration
             $table->foreignId('address_id')->nullable()->constrained('locations')->onDelete('cascade');
 
             // Customer
-            $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
+            // $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
 
             // Order
             $table->foreignId('cashier_id')->nullable()->constrained('users')->onDelete('cascade');
