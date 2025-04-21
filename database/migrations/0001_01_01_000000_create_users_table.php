@@ -21,6 +21,7 @@ return new class extends Migration
                 FilamentCompanies::hasSocialiteFeatures()
             );
             $table->rememberToken();
+            $table->string('role')->dafault('user');
             $table->foreignId('current_company_id')->nullable();
             $table->foreignId('current_connected_account_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();

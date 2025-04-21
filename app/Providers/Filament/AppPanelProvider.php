@@ -29,7 +29,9 @@ use App\Actions\FilamentCompanies\UpdateCompanyName;
 use App\Actions\FilamentCompanies\UpdateUserPassword;
 use App\Actions\FilamentCompanies\UpdateUserProfileInformation;
 use App\Models\Company;
-use Filament\Facades\Filament;use Filament\Navigation\MenuItem;
+use Filament\Facades\Filament;
+use Filament\Navigation\MenuItem;
+use Filament\SpatieLaravelTranslatablePlugin;
 use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Auth\Login;
@@ -54,7 +56,22 @@ class AppPanelProvider extends PanelProvider
             ->tenantProfile(CompanySettings::class)
             ->tenantRegistration(CreateCompany::class)
             // ->registration(Register::class)
-
+            // ->plugin(
+            //     FilamentEcommercePlugin::make()
+            //         ->useCoupon()
+            //         // ->useGiftCard()
+            //         // ->useReferralCode()
+            //         ->allowOrderExport()
+            //         ->allowOrderImport()
+            //         ->useWidgets()
+            //         ->useAccounts(false)
+            //         ->useOrderSettings(false)
+            //         ->useSettings(false)
+            //         // ->useShippingVendor(false)
+            //         ->useCompany(false)
+            //     //                    ->showOrderAccount(false)
+            //     //                    ->allowOrderCreate(false)
+            // )
             ->sidebarFullyCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
@@ -81,21 +98,10 @@ class AppPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugin(
-                FilamentEcommercePlugin::make()
-                    ->useCoupon()
-                    // ->useGiftCard()
-                    // ->useReferralCode()
-                    ->allowOrderExport()
-                    ->allowOrderImport()
-                    ->useWidgets()
-                    ->useAccounts(false)
-                    ->useOrderSettings(false)
-                    ->useSettings(false)
-                    // ->useShippingVendor(false)
-                    ->useCompany(false)
-                //                    ->showOrderAccount(false)
-                //                    ->allowOrderCreate(false)
+                SpatieLaravelTranslatablePlugin::make()
+                    ->defaultLocales(['en', 'es']),
             )
+
             ->plugin(
                 FilamentCompanies::make()
                     ->userPanel('admin')

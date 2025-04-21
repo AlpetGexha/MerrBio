@@ -70,9 +70,27 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         ];
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->email === 'admin@example.com';
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+
+        if ($panel->getId() === 'app') {
+            return $this->isFarmer();
+        }
+
+        if ($panel->getId() === 'admin') {
+            return $this->isAdmin();
+        }
+
+        if ($panel->getId() === 'company') {
+            return false;
+        }
+
+        return false;
     }
 
     public function canAccessTenant(Model $tenant): bool
@@ -130,5 +148,4 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     {
         return $this->role === 'farmer';
     }
-
 }

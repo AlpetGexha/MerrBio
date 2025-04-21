@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Company;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('uuid')->unique();
+            $table->foreignIdFor(Company::class)->constrained();
 
             // Order Type
             $table->string('type')->default('system')->nullable();
@@ -38,7 +40,7 @@ return new class extends Migration
             $table->foreignId('coupon_id')->nullable()->constrained('coupons')->onDelete('cascade');
             $table->foreignId('shipper_id')->nullable()->constrained('deliveries')->onDelete('cascade');
             $table->foreignId('shipping_vendor_id')->nullable()->constrained('shipping_vendors')->onDelete('cascade');
-            $table->foreignId('company_id')->nullable()->constrained('companies')->onDelete('cascade');
+            // $table->foreignId('company_id')->nullable()->constrained('companies')->onDelete('cascade');
             $table->foreignId('branch_id')->nullable()->constrained('branches')->onDelete('cascade');
 
             // Customer Info
