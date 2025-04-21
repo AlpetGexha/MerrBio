@@ -13,23 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('companiess', function (Blueprint $table) {
+        Schema::create('companies322s', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('country_id')->nullable()->constrained('countries');
-
-            $table->string('name');
-            $table->string('ceo')->nullable();
-            $table->string('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('zip')->nullable();
-
-            $table->string('registration_number')->nullable();
-            $table->string('tax_number')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('website')->nullable();
-            $table->text('notes')->nullable();
 
             $table->timestamps();
         });
