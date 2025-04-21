@@ -23,11 +23,5 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::unguard();
         Model::automaticallyEagerLoadRelationships();
-
-        // skip 2021_04_14_182305_fill_all_vars  migration while migrating on production on postgres
-
-        if (app()->environment('production')) {
-            $this->app['db']->whenSchemaIs('pgsql')->skipMigration('2021_04_14_182305_fill_all_vars');
-        }
     }
 }
