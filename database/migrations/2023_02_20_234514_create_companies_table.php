@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->index();
             $table->string('name');
-            $table->integer('personal_company')->default(0);
+            $table->boolean('personal_company')->default(0);
             $table->timestamps();
         });
     }
