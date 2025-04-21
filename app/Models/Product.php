@@ -74,15 +74,18 @@ class Product extends ProdcutBase
      */
     public function getMaxCartQuantity(): int
     {
+        // If product has unlimited stock
         if ($this->has_unlimited_stock) {
-            return $this->has_max_cart ? $this->max_cart : PHP_INT_MAX;
+            return $this->has_max_cart ? (int)$this->max_cart : PHP_INT_MAX;
         }
 
+        // If product has limited stock
         if ($this->has_max_cart) {
-            return min($this->max_cart, $this->stock_quantity);
+            return (int)min($this->max_cart, $this->stock_quantity);
         }
 
-        return $this->stock_quantity;
+        // Default case: return stock quantity or 0 if null
+        return (int)($this->stock_quantity ?? 0);
     }
 
     /**
