@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+        Model::automaticallyEagerLoadRelationships();
 
         // skip 2021_04_14_182305_fill_all_vars  migration while migrating on production on postgres
 
