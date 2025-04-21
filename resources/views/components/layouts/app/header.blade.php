@@ -65,13 +65,17 @@
                                 </div>
                             </div>
                         </flux:menu.radio.group>
-                        @if(auth()->check() && !auth()->user()->isFarmer())
-                            <flux:menu.separator />
+                        <flux:menu.separator />
 
+                        @if(auth()->check() && !auth()->user()->isFarmer())
                             <flux:menu.radio.group>
                                 <flux:menu.item :href="route('become-farmer')" icon="cog" wire:navigate>{{ __('Become a Farmer') }}</flux:menu.item>
                             </flux:menu.radio.group>
 
+                            @else
+                            <flux:menu.radio.group>
+                                <flux:menu.item href='/app' icon="chart-bar" wire:navigate>{{ __('Dashboard') }}</flux:menu.item>
+                            </flux:menu.radio.group>
                         @endif
                         <flux:menu.separator />
 

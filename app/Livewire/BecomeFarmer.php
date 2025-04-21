@@ -16,9 +16,9 @@ class BecomeFarmer extends Component
             'role' => 'farmer',
         ]);
 
-        session()->flash('success', 'You are now a farmer! You can access your farmer dashboard.');
+        // session()->flash('success', 'You are now a farmer! You can access your farmer dashboard.');
 
-        // return redirect()->route('filament.farmer.pages.dashboard');
+        return redirect()->route('filament.app.tenant.registration');
     }
 
     public function render()
