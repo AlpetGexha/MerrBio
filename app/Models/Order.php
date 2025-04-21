@@ -6,26 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use TomatoPHP\FilamentEcommerce\Models\Order as ModelsOrder;
 
-class Order extends Model
+class Order extends ModelsOrder
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'farmer_id',
-        'status',
-        'total_amount',
-        'shipping_address_id',
-        'payment_method',
-        'payment_status',
-    ];
-
-    protected $casts = [
-        'total_amount' => 'decimal:2',
-        'shipping_address' => 'json',
-        'billing_address' => 'json',
-    ];
 
     public function user(): BelongsTo
     {

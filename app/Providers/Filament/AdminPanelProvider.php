@@ -20,7 +20,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use TomatoPHP\FilamentEcommerce\FilamentEcommercePlugin;
+
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -67,20 +67,6 @@ class AdminPanelProvider extends PanelProvider
             ->plugin(
                 SpatieLaravelTranslatablePlugin::make()
                     ->defaultLocales(['en', 'al'])
-            )
-            ->plugin(
-                FilamentEcommercePlugin::make()
-                    ->useCoupon()
-                    // ->useGiftCard()
-                    // ->useReferralCode()
-                    ->allowOrderExport()
-                    ->allowOrderImport()
-                    ->useWidgets()
-                    // ->useAccounts(false)
-                    // ->useOrderSettings(false)
-                    // ->useSettings(false)
-                    // ->showOrderAccount(false)
-                    // ->allowOrderCreate(false)
             );
     }
 }
