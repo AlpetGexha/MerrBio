@@ -56,4 +56,18 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
     {
         return $this->hasMany(Product::class);
     }
+
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
+    }
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function shippingVendors(): HasMany
+    {
+        return $this->hasMany(ShippingVendor::class);
+    }
 }

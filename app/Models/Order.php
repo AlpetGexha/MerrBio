@@ -11,8 +11,6 @@ use TomatoPHP\FilamentEcommerce\Models\Order as ModelsOrder;
 class Order extends ModelsOrder
 {
     use HasFactory;
-
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

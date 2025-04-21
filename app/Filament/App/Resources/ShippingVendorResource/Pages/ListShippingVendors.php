@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\App\Resources\CouponResource\Pages;
+namespace App\Filament\App\Resources\ShippingVendorResource\Pages;
 
 use Filament\Resources\Pages\ManageRecords;
-use App\Filament\App\Resources\CouponResource;
+use App\Filament\App\Resources\ShippingVendorResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListCoupons extends ManageRecords
+class ListShippingVendors extends ManageRecords
 {
-    protected static string $resource = CouponResource::class;
+    protected static string $resource = ShippingVendorResource::class;
 
     protected function getHeaderActions(): array
     {
