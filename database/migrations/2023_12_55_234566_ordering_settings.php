@@ -6,6 +6,6 @@ return new class extends SettingsMigration
 {
     public function up(): void
     {
-        // $this->migrator->add('ordering.ordering_company_id', 1);
+        $this->migrator->add('ordering.ordering_company_id', 1);
     }
 };

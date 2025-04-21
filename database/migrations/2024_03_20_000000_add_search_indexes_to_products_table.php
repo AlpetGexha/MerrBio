@@ -10,15 +10,15 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             // Add indexes for searchable columns
-            // $table->index('sku');
-            // $table->rawIndex("(JSON_EXTRACT(name, '$.en'))", 'products_name_en_index');
-            // $table->rawIndex("(JSON_EXTRACT(description, '$.en'))", 'products_description_en_index');
+            $table->index('sku');
+            $table->rawIndex("(JSON_EXTRACT(name, '$.en'))", 'products_name_en_index');
+            $table->rawIndex("(JSON_EXTRACT(description, '$.en'))", 'products_description_en_index');
 
-            // // Add composite index for price and stock status
-            // $table->index(['price', 'is_in_stock']);
+            // Add composite index for price and stock status
+            $table->index(['price', 'is_in_stock']);
 
-            // // Add index for category
-            // $table->index('category_id');
+            // Add index for category
+            $table->index('category_id');
         });
     }
 

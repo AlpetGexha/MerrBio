@@ -14,20 +14,20 @@ return new class extends Migration
      */
     public function up()
     {
-        // $countires = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/countries.sql'));
-        // DB::connection()->getPdo()->exec($countires);
+        $countires = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/countries.sql'));
+        DB::connection()->getPdo()->exec($countires);
 
-        // $citites = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/cities.sql'));
-        // DB::connection()->getPdo()->exec($citites);
+        $citites = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/cities.sql'));
+        DB::connection()->getPdo()->exec($citites);
 
-        // $areas = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/areas.sql'));
-        // DB::connection()->getPdo()->exec($areas);
+        $areas = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/areas.sql'));
+        DB::connection()->getPdo()->exec($areas);
 
-        // $currencies = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/currencies.sql'));
-        // DB::connection()->getPdo()->exec($currencies);
+        $currencies = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/currencies.sql'));
+        DB::connection()->getPdo()->exec($currencies);
 
-        // $languages = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/languages.sql'));
-        // DB::connection()->getPdo()->exec($languages);
+        $languages = \Illuminate\Support\Facades\File::get(base_path('vendor/tomatophp/filament-locations/database/data/languages.sql'));
+        DB::connection()->getPdo()->exec($languages);
     }
 
     /**
