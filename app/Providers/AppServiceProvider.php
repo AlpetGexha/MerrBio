@@ -29,7 +29,5 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             $this->app['db']->whenSchemaIs('pgsql')->skipMigration('2021_04_14_182305_fill_all_vars');
         }
-
-
     }
 }
