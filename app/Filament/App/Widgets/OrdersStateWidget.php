@@ -16,6 +16,10 @@ class OrdersStateWidget extends BaseWidget
 
     protected static string $view = 'filament-widgets::stats-overview-widget';
 
+    protected static ?int $sort = 1;
+
+
+
     protected function getStats(): array
     {
         $orderQuery = Order::query();

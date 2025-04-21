@@ -11,6 +11,8 @@ use TomatoPHP\FilamentTypes\Models\Type;
 class OrderSourceChart extends ChartWidget
 {
     use HasShield;
+    protected static ?int $sort = 2;
+
 
     public function getHeading(): string|Htmlable|null
     {

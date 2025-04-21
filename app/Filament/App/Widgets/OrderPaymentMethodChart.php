@@ -11,6 +11,7 @@ use TomatoPHP\FilamentTypes\Models\Type;
 class OrderPaymentMethodChart extends ChartWidget
 {
     use HasShield;
+    protected static ?int $sort = 3;
 
     public function getHeading(): string|Htmlable|null
     {
@@ -31,7 +32,7 @@ class OrderPaymentMethodChart extends ChartWidget
                     'label' => 'Source',
                     'data' =>  $query->get()->whereIn('payment_method', $paymentMethods->pluck('key')->toArray())->pluck('count')->toArray(),
                     'backgroundColor' => $paymentMethods->pluck('color')->toArray(),
-                    'hoverOffset'=> 4
+                    'hoverOffset' => 4
                 ]
             ],
         ];
