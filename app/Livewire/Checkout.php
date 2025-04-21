@@ -102,21 +102,11 @@ class Checkout extends Component
         }
     }
 
-    public function placeOrder()
+    public function checkout()
     {
         $user = Auth::user();
 
         // Find or create an account for the user
-        $account = Account::firstOrCreate(
-            ['email' => $user->email],
-            [
-                'name' => $user->name,
-                'username' => $user->email,
-                'type' => 'customer',
-                'is_active' => true,
-                'is_login' => true,
-            ]
-        );
 
         // Save shipping address if requested and a new address was entered
         if ($this->save_address && $this->show_address_fields) {
@@ -135,40 +125,73 @@ class Checkout extends Component
             $address->setAsDefault();
         }
 
-        $order = Order::create([
-            'uuid' => Str::uuid(),
-            'user_id' => $user->id,
-            'account_id' => $account->id,
-            'status' => 'pending',
-            'total_amount' => $this->total,
-            'currency' => 'USD',
-            'shipping_address' => $this->shipping_address,
-            'billing_address' => $this->same_as_shipping ? $this->shipping_address : $this->billing_address,
-            'payment_method' => $this->payment_method,
-            'payment_status' => 'pending',
-        ]);
+        // Group cart items by company
+        $cartItemsByCompany = $this->cartItems->groupBy(function ($item) {
+            return $item->product->company_id;
+        });
 
-        foreach ($this->cartItems as $item) {
-            $order->items()->create([
-                'product_id' => $item->product_id,
+        $orders = collect();
+
+        // Create separate orders for each company
+        foreach ($cartItemsByCompany as $companyId => $companyCartItems) {
+            $order = Order::create([
+                'uuid' => Str::uuid(),
+                'user_id' => $user->id,
                 'account_id' => $account->id,
-                'item' => $item->product->name,
-                'price' => $item->product->price,
-                'qty' => $item->quantity,
-                'total' => $item->product->price * $item->quantity,
-                'discount' => 0,
-                'vat' => 0,
-                'returned' => 0,
-                'returned_qty' => 0,
-                'is_free' => false,
-                'is_returned' => false,
-                'options' => null,
+                'company_id' => $companyId,
+                'status' => 'pending',
+                'total_amount' => $companyCartItems->sum(function ($item) {
+                    return $item->product->price * $item->quantity;
+                }),
+                'currency' => 'USD',
+                'shipping_address' => json_encode($this->shipping_address),
+                'billing_address' => json_encode($this->same_as_shipping ? $this->shipping_address : $this->billing_address),
+                'payment_method' => $this->payment_method,
+                'payment_status' => 'pending',
             ]);
+
+            foreach ($companyCartItems as $item) {
+                $order->items()->create([
+                    'product_id' => $item->product_id,
+                    'account_id' => $account->id,
+                    'item' => $item->product->name,
+                    'price' => $item->product->price,
+                    'qty' => $item->quantity,
+                    'total' => $item->product->price * $item->quantity,
+                    'discount' => 0,
+                    'vat' => 0,
+                    'returned' => 0,
+                    'returned_qty' => 0,
+                    'is_free' => false,
+                    'is_returned' => false,
+                    'options' => null,
+                ]);
+            }
+
+            $orders->push($order);
         }
 
+        $account = Account::firstOrCreate(
+            ['email' => $user->email],
+            [
+                'name' => $user->name,
+                'username' => $user->email,
+                'type' => 'customer',
+                'is_active' => true,
+                'is_login' => true,
+            ]
+        );
+
+        // Clear the cart
         $user->cartItems()->delete();
 
-        return $this->redirect(route('orders.show', $order));
+        // If there's only one order, redirect to it directly
+        if ($orders->count() === 1) {
+            return $this->redirect(route('orders.show', $orders->first()));
+        }
+
+        // If multiple orders, redirect to orders list
+        return $this->redirect(route('orders.index'));
     }
 
     #[Computed]

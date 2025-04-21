@@ -4,7 +4,7 @@
             <div class="p-6 text-zinc-900 dark:text-zinc-100">
                 <h2 class="text-2xl font-bold mb-6">Checkout</h2>
 
-                <form wire:submit="placeOrder" class="space-y-6">
+                <form wire:submit="checkout" class="space-y-6">
                     <!-- Shipping Address -->
                     <div class="space-y-4">
                         <h3 class="text-lg font-semibold">Shipping Address</h3>
